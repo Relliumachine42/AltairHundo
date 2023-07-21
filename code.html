@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>App Name: A Coding Challenge</title>
+    <title>Count 100: A Coding Challenge</title>
     <!-- bootstrap css-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -25,7 +25,7 @@
             <div class="container-fluid">
                 <a class="navbar-brand" href="/index.html">
                     <img src="/img/mark.png" height="30" alt="developer logo" />
-                    App Name
+                    Count 100
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,26 +63,119 @@
             <div class="col-12 col-lg-8">
                 <pre class="line-numbers">
                     <code class="language-js">
-                        function displayMessage() {
-                            let inputBox = document.getElementById('message');
-                            
-                            let message = inputBox.value;
+                        // Gets numbers from our form inputs
+                        // ENTRY POINT
+                        // Controller function
+                        function getValues() {
+                            let startNumber = document.getElementById('startValue').value;
+                            let endNumber = document.getElementById('endValue').value;
                         
-                            Swal.fire(
-                                {
-                                    backdrop: false,
-                                    title: 'App Name',
-                                    text: message
+                            startNumber = Number(startNumber);
+                            endNumber = Number(endNumber);
+                        
+                            if(isNaN(startNumber) == true || isNaN(endNumber) == true) {
+                                Swal.fire({
+                                    title: 'Woopsie!',
+                                    text: 'Count 100 only works with numbers.',
+                                    icon: 'error',
+                                    backdrop: false
+                                });
+                            } else if(startNumber > endNumber) {
+                                    Swal.fire({
+                                        title: 'Oops!',
+                                        text: 'The starting number must be less than the ending number',
+                                        icon: 'error',
+                                        backdrop: false
+                                    });
+                                    
+                                } else {
+                                    let numberArray = generateNumbers(startNumber, endNumber);
+                                
+                                    displayNumbers(numberArray);
                                 }
-                            );
+                        
+                            }
+                        
+                        }
+                        
+                        // Business logic- creates every number in the input range
+                        // Data Model
+                        function generateNumbers(start, end) {
+                        
+                            let range = [];
+                        
+                            for(let number = start; number <= end; number++) {
+                                
+                                range.push(number);
+                        
+                        
+                            }
+                        
+                            return range;
+                        
+                        }
+                        
+                        // puts the numbers on the page
+                        // View Function
+                        function displayNumbers(numbersToDisplay) {
+                        
+                            let tableHtml = '';
+                            
+                            for(let index = 0; index < numbersToDisplay.length; index++) {
+                        
+                                let currentNumber = numbersToDisplay[index];
+                        
+                                let className = '';
+                        
+                                if(currentNumber % 2 == 0) {
+                                    className = 'even';
+                                } else {
+                                    className = 'odd';
+                                }
+                        
+                                let tableRowHtml = `&lt;tr>&lt;td class="${className}">${currentNumber}&lt;/td>&lt;/tr>`;
+                        
+                                tableHtml += tableRowHtml;
+                            }
+                        
+                            document.getElementById('results').innerHTML = tableHtml;
+                        
                         }
                     </code>
                 </pre>
             </div>
             <div class="col-12 col-lg-4">
-                <p>The code is structured in one function</p>
-                <h5>displayMessage</h5>
-                <p>Shows a SweetAlert with the value of the <code>message</code> variable</p>
+                <p>The code is structured in three functions</p>
+                <h5>Count 100</h5>
+                <p>The entry point is the function, <code>getValues()</code>, which takes the values from the input
+                    forms on the Html for the starting and ending numbers. It then checks whether those values are not
+                    numbers, displaying an error message if so. Otherwise, it checks whether the starting number is
+                    greater than the end number, displaying an error message in that case as well. Otherwise, it
+                    continues by intializing a variable <code>numberArray</code> with a function
+                    <code>generateNumbers()</code> of two arguments, then runs a third function
+                    <code>displayNumbers()</code>.</p>
+                <p>The second function, <code>generateNumber()</code>, is given two parameters, corresponding to the two
+                    arguments it was given inside the previous <code>getValues()</code> function. Then
+                    <code>generateNumbers()</code> declares a variable <code>range</code> as an empty array. A for loop
+                    pushes the starting number into the array and loops back, pushing that value incrimented by one
+                    repeatedly until it surpasses the value of the end number, giving the array every number from the
+                    starting number to the end number.</p>
+                <p>The third function, <code>displayNumbers()</code>, is given by the first function the array generated
+                    by the second function as its parameter. It declares the variable <code>tableHtml</code> and using a
+                    second <code>for()</code> loop, it assigns the value of the array index to the variable
+                    <code>currentNumber</code> starting at index 0 for the starting value. Variable
+                    <code>className</code> is declared, and using more boolean logic, it tests whether the current
+                    number is even or odd by dividing it by two and checking for a remainder. If the remainder is zero,
+                    <code>className</code> is given the value 'even'. Otherwise, the value given is 'odd'. Variable
+                    <code>tableHtml</code> is initialized with a template literal consisting of html code that creates a
+                    table cell for each iteration of the <code>currentNumber</code> in the <code>for()</code> loop,
+                    using string interpolation to insert the number and the class attribute of "even" or "odd". When the
+                    table cell is given the class of "even" it coresponds to a .even style in css that bolds the
+                    contents. <code>tableHtml</code> is added to <code>tableRowHtml</code> incrementing in the for loop
+                    until it contains html for every table cell of every number between the starting number and the end
+                    number. Finally, when the length of the array equals the index that's selecting the currentNumber,
+                    it exits the for() loop and inserts the value of <code>tableHtml</code> into the table body element
+                    in the Html. </p>
             </div>
         </div>
     </main>
@@ -94,7 +187,7 @@
                     &copy;2023 Glenn Schwartz
                 </div>
                 <div class="col">
-                    <img src="/img/logolengthwise.png" height="35"/>
+                    <img src="/img/logolengthwise.png" height="35" />
                 </div>
                 <div class="col text-lg-end">
                     <a href="#"><i class="socialIcons bi bi-linkedin"></i></a>
